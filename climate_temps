@@ -1,0 +1,67 @@
+select *
+from `portfolio-347321.climate_change.states`
+
+```
+
+#7 Countries the data is collected from
+SELECT distinct (Country)
+FROM `portfolio-347321.climate_change.states` 
+
+```
+
+Alter TABLE `portfolio-347321.climate_change.states` 
+rename column dt to Climate_Date
+
+```
+
+UPDATE   `portfolio-347321.climate_change.states`
+set Climate_Date = convert(date,Climate_date)
+
+```
+
+#delete unused column
+Alter TABLE `portfolio-347321.climate_change.states`
+drop column AverageTemperatureUncertainty	 
+
+```
+
+#reformat columns to give state and country in one column
+SELECT AverageTemperature, concat(State,", ",Country)as Location
+FROM `portfolio-347321.climate_change.states` 
+Where AverageTemperature is not null
+order by AverageTemperature asc
+
+```
+
+#case statement to show countries who's avg temp is above or below freezing
+SELECT AverageTemperature, country,
+case  when AverageTemperature > 32 then 'above freezing'
+else 'below freezing'
+end as freezing_point
+FROM `portfolio-347321.climate_change.states` 
+
+```
+
+#dates where no average temperature was recorded
+SELECT dt, AverageTemperature
+FROM `portfolio-347321.climate_change.states` 
+Where AverageTemperature is null 
+
+```
+
+#lowest recorded average temperatures of states only within the US sorted by lowest temp
+SELECT distinct(State), AverageTemperature
+FROM `portfolio-347321.climate_change.states` 
+Where AverageTemperature is not null
+and country = 'United States'
+order by AverageTemperature asc
+
+```
+
+#not useful to replace nulls with 0 since would skew data but included to show knowledge of ifnull
+SELECT distinct dt as climate_date, state, AverageTemperature, ifnull(AverageTemperature,0)
+FROM `portfolio-347321.climate_change.states`
+Where State = 'Alaska' 
+order by climate_date asc 
+
+```
